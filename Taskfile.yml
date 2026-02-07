@@ -1,0 +1,71 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install all dependencies including dev
+    cmds:
+      - uv sync --all-groups
+
+  lint:
+    desc: Run linters (ruff + mypy)
+    cmds:
+      - uv run ruff check skills tests
+      - uv run mypy skills
+
+  format:
+    desc: Format code with ruff
+    cmds:
+      - uv run ruff format skills tests
+      - uv run ruff check --fix skills tests
+
+  test:
+    desc: Run tests
+    cmds:
+      - uv run pytest
+
+  test:cov:
+    desc: Run tests with coverage
+    cmds:
+      - uv run pytest --cov=skills --cov-report=html
+
+  validate:
+    desc: Validate core skills
+    cmds:
+      - uv run python -m skills validate
+
+  check:
+    desc: Run all checks (lint + test)
+    cmds:
+      - task: lint
+      - task: test
+
+  build:
+    desc: Build package
+    cmds:
+      - uv build
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf dist/ .coverage htmlcov/ .pytest_cache/ .mypy_cache/ .ruff_cache/ .uv/
+
+  # Skills CLI shortcuts
+  skills:list:
+    desc: List all core skills
+    cmds:
+      - uv run python -m skills list
+
+  skills:list:categories:
+    desc: List skills grouped by category
+    cmds:
+      - uv run python -m skills list --by-category
+
+  skills:new:
+    desc: Create a new skill (use -- --id <skill_id>)
+    cmds:
+      - uv run python -m skills new {{.CLI_ARGS}}
+
+  skills:info:
+    desc: Show skill info (use -- --id <skill_id>)
+    cmds:
+      - uv run python -m skills info {{.CLI_ARGS}}

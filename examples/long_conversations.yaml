@@ -1,0 +1,58 @@
+id: long_conversations
+name: Long Conversation Handling
+description: |
+  Activate in extended conversations (5+ turns) to maintain context coherence
+  and prevent repetition.
+category: conversation_management
+trigger_type: turn_based
+trigger_config:
+  min_turn: 5
+  max_turn: 100
+additional_triggers:
+  - type: semantic
+    config:
+      importance: high
+      reference_phrases:
+        - "as we discussed earlier"
+        - "going back to what you mentioned"
+        - "earlier you said"
+        - "you mentioned before that"
+        - "referring back to"
+        - "to summarize our conversation"
+        - "based on what we've covered"
+        - "we talked about this before"
+        - "you already explained"
+        - "circling back to"
+        - "as I mentioned earlier"
+        - "to recap what we discussed"
+        - "Can you remind me what you said about that?"
+        - "Wait, didn't you say something different before?"
+        - "Let me make sure I understand everything we've covered"
+  - type: keyword
+    config:
+      keywords:
+        - "earlier"
+        - "before"
+        - "previously"
+        - "recap"
+        - "summarize"
+        - "summary"
+        - "remind me"
+        - "refresh my memory"
+        - "you said"
+        - "you mentioned"
+      # Higher history decay for long_conversations since this skill is specifically
+      # about recalling earlier parts of the conversation. Position-aware decay:
+      # - Most recent message (-1): 0.8 (high relevance)
+      # - Second message (-2): 0.6 (moderate relevance)
+      # - Third message (-3): 0.4 (still relevant for context skills)
+      history_decay_by_position: [0.8, 0.6, 0.4]
+priority: 65
+skill: |
+  ### Long Conversations
+
+  As conversations extend:
+  - **Reference earlier context naturally.** If the user mentioned their application earlier, use that context without re-asking.
+  - **Don't repeat explanations.** If you explained something earlier, reference it briefly.
+  - **Summarize when pivoting.** When shifting topics after extended discussion.
+  - **Stay consistent.** Don't contradict earlier statements. If new information changes an earlier answer, acknowledge the update explicitly.

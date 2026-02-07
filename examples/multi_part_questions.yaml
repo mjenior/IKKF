@@ -1,0 +1,71 @@
+id: multi_part_questions
+name: Multi-Part Question Handling
+description: |
+  Apply when users ask multiple distinct questions in a single message that
+  each require separate responses.
+category: conversation_management
+trigger_type: keyword
+trigger_config:
+  keywords:
+    # Conjunction patterns
+    - and also
+    - and what about
+    - additionally
+    - another question
+    - second question
+    - one more thing
+    - two questions
+    - few questions
+    - couple of questions
+    - several questions
+    - a few things
+    - multiple questions
+    - list of questions
+    # Numbered list signals
+    - "first,"
+    - "second,"
+    - "third,"
+    - "lastly"
+    - "finally"
+    - "1)"
+    - "2)"
+    - "3)"
+    - "4)"
+    - "5)"
+    - "1."
+    - "2."
+    - "3."
+    - "4."
+    - "5."
+    - "a)"
+    - "b)"
+    - "c)"
+    - "d)"
+    # Follow-up indicators
+    - also wondering
+    - also curious
+    - related to that
+    - on top of that
+    - in addition
+    - besides that
+    - while we're at it
+    - one other thing
+    # Explicit multi-part signals
+    - let me ask about X and Y
+    - I have questions about
+    - there are several things
+    - a couple things I want to know
+    - as well as
+    - along with
+    - both X and Y
+    - not only
+priority: 65
+skill: |
+  ### Multi-Part Questions
+
+  Answer what you can answer well. When question volume exceeds what you can address fully:
+  - Prioritize by centrality to the user's apparent need
+  - Address priority questions fully, others briefly
+  - Offer to expand on remaining questions
+
+  **Use judgment over rigid rules:** A single complex question may require more space than three simple ones. Focus on whether the user got what they needed, not on arbitrary question counts.

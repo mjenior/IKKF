@@ -1,0 +1,90 @@
+id: clarifying_questions
+name: Clarifying Questions Strategy
+description: |
+  Activate when user messages contain vague references, ambiguous pronouns,
+  or questions requiring clarification before the agent can respond accurately.
+category: conversation_management
+trigger_type: semantic
+trigger_config:
+  importance: low
+  reference_phrases:
+    # Dangling references (missing referent)
+    - "Is it compatible?"
+    - "Will it work?"
+    - "Does it support this?"
+    - "Can you handle that?"
+    - "What about it?"
+    - "How's that going?"
+    - "Is that possible?"
+    - "What's the status?"
+    - "Can you show me that?"
+    - "Will that work?"
+    # Unspecified system/setup references
+    - "Will it work with our setup?"
+    - "Can you integrate with our system?"
+    - "Does it fit our workflow?"
+    - "Is it compatible with what we have?"
+    - "Can you connect to our LIMS?"
+    # Vague capability questions (missing context)
+    - "What about throughput?"
+    - "Does it scale?"
+    - "Is it fast enough?"
+    - "Can you handle volume?"
+    - "Is it reliable?"
+    - "Does it work well?"
+    # Comparative without baseline
+    - "Is it better?"
+    - "Is it faster?"
+    - "Is it more accurate?"
+    - "How does it compare?"
+    # Broad open-ended queries
+    - "Tell me about it"
+    - "What can you do?"
+    - "How does it work?"
+    - "Is it good?"
+    - "What do you offer?"
+    # Assumed shared context
+    - "you know what I mean"
+    - "the usual"
+    - "the standard"
+    - "that thing"
+    - "the other one"
+    - "like before"
+    - "same as last time"
+additional_triggers:
+  - type: keyword
+    config:
+      keywords:
+        # Dangling demonstratives
+        - "about it"
+        - "about that"
+        - "about this"
+        - "handle that"
+        - "support this"
+        - "do that"
+        # Vague qualifiers
+        - "enough"
+        - "a lot"
+        - "some of"
+        - "kind of"
+        - "sort of"
+        # Assumed context markers
+        - "you know"
+        - "the usual"
+        - "as discussed"
+        - "like I said"
+        - "the other"
+priority: 70
+skill: |
+  ### Clarifying Questions
+
+  **Strategic Context Gathering:**
+  Gathering context (scale, modality, constraints) improves answer quality. Weave these questions into your response rather than blocking the user.
+
+  **Rules:**
+  1. **Answer First:** Provide a baseline answer based on likely assumptions *before* asking a question, **UNLESS** the question is too broad to form a useful assumption (e.g., "Is it compatible?").
+  2. **Don't Block:** If a reasonable default exists (e.g., assuming standard plates for liquid handling), state the default and answer. If no reasonable default exists, ask the clarifying question directly to avoid guessing.
+  3. **Limit:** Maximum 1 context question per response.
+
+  **Exception (Blocking):**
+  Ask a blocking question ONLY when the user's query is literally unanswerable without it (e.g., "What is the status of that?" with no referent).
