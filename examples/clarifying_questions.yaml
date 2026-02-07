@@ -2,11 +2,13 @@ id: clarifying_questions
 name: Clarifying Questions Strategy
 description: |
   Activate when user messages contain vague references, ambiguous pronouns,
-  or questions requiring clarification before the agent can respond accurately.
+  missing context, or underspecified constraints. Critical for preventing low-quality
+  answers based on faulty assumptions. Skill balances proactive clarification with user
+  experience—gathering context inline without derailing the conversation.
 category: conversation_management
 trigger_type: semantic
 trigger_config:
-  importance: low
+  importance: high
   reference_phrases:
     # Dangling references (missing referent)
     - "Is it compatible?"
@@ -24,7 +26,6 @@ trigger_config:
     - "Can you integrate with our system?"
     - "Does it fit our workflow?"
     - "Is it compatible with what we have?"
-    - "Can you connect to our LIMS?"
     # Vague capability questions (missing context)
     - "What about throughput?"
     - "Does it scale?"
@@ -51,6 +52,20 @@ trigger_config:
     - "the other one"
     - "like before"
     - "same as last time"
+    # Missing boundary conditions
+    - "Is there a limit?"
+    - "What's the maximum?"
+    - "What's the minimum?"
+    - "Any constraints I should know?"
+    - "What are the limits?"
+    # Underspecified environment
+    - "Does it work in our environment?"
+    - "Will it work with what we have?"
+    - "Is it compatible with our tech stack?"
+    # Implicit assumptions
+    - "Can I use this as-is?"
+    - "Does it come ready to use?"
+    - "Do I need to configure anything?"
 additional_triggers:
   - type: keyword
     config:
@@ -74,17 +89,38 @@ additional_triggers:
         - "as discussed"
         - "like I said"
         - "the other"
-priority: 70
+        # Uncertainty markers
+        - "not sure if"
+        - "can it"
+        - "does it"
+        - "will it"
+        - "does that work"
+        - "is that possible"
+        - "scope"
+        - "limitation"
+        - "constraint"
+        - "boundary"
+        - "edge case"
+priority: 75
 skill: |
   ### Clarifying Questions
 
-  **Strategic Context Gathering:**
-  Gathering context (scale, modality, constraints) improves answer quality. Weave these questions into your response rather than blocking the user.
+  **CONTEXT ASSESSMENT PHASE:**
+  1. **Identify gaps.** Note what's explicitly stated vs. what you're assuming (constraints, scope, environment, scale, modality).
+  2. **Categorize severity.** Critical gaps block useful answers. Minor gaps permit reasonable defaults.
+  3. **Evaluate assumability.** Can you identify a defensible default? (e.g., "standard 96-well plate" for lab work, "cloud-based SaaS" as baseline)
 
-  **Rules:**
-  1. **Answer First:** Provide a baseline answer based on likely assumptions *before* asking a question, **UNLESS** the question is too broad to form a useful assumption (e.g., "Is it compatible?").
-  2. **Don't Block:** If a reasonable default exists (e.g., assuming standard plates for liquid handling), state the default and answer. If no reasonable default exists, ask the clarifying question directly to avoid guessing.
-  3. **Limit:** Maximum 1 context question per response.
+  **CLARIFICATION STRATEGY:**
+  1. **Answer First (When Possible):** Provide a baseline answer using reasonable defaults *before* asking. State your assumption explicitly: "Assuming standard configurations, here's the answer..." This respects user time while opening the door for correction.
+  2. **Ask Inline:** Weave context questions naturally into your response, not as blocking gate-keepers. Position questions to refine or extend, not restart: "If your throughput needs are higher, here's what changes..."
+  3. **Prioritize Strategic Context:** Ask about constraints that significantly change recommendations (performance thresholds, environmental limits, integration requirements) over implementation details.
+  4. **Maintain Flow:** Maximum 1 clarifying question per response. Quality of context gathered matters more than quantity.
 
-  **Exception (Blocking):**
-  Ask a blocking question ONLY when the user's query is literally unanswerable without it (e.g., "What is the status of that?" with no referent).
+  **BLOCKING EXCEPTION:**
+  Ask a **blocking question only** when the query is truly unanswerable:
+  - Dangling referents with zero context: "What about it?" (no prior referent exists)
+  - Undefined comparisons: "Is it better?" (better than what? no baseline)
+  - System-dependent unknowns: "Will it work with our setup?" (no way to assume)
+
+  **QUALITY PRINCIPLE:**
+  Better to provide a thoughtful answer with stated assumptions than to withhold answers waiting for perfect clarity. Users can correct wrong assumptions more efficiently than being interrogated before help arrives.

@@ -1,8 +1,10 @@
 id: multi_part_questions
-name: Multi-Part Question Handling
+name: Multi-Part Question Handling with Plan-and-Solve
 description: |
-  Apply when users ask multiple distinct questions in a single message that
-  each require separate responses.
+  Apply when users ask multiple distinct questions or complex multi-part queries
+  that benefit from structured decomposition and systematic resolution. Highest
+  impact when questions are interdependent, require sequential reasoning, or
+  involve trade-offs and comparisons.
 category: conversation_management
 trigger_type: keyword
 trigger_config:
@@ -59,13 +61,57 @@ trigger_config:
     - along with
     - both X and Y
     - not only
-priority: 65
+    # Plan-and-Solve indicators
+    - how should I approach
+    - what's the best way to
+    - walk me through
+    - help me understand
+    - step by step
+    - break this down
+    - what are the implications
+    - pros and cons
+    - trade-offs
+    - dependencies
+    - sequence
+    - priority
+additional_triggers:
+  - type: semantic
+    config:
+      importance: high
+      reference_phrases:
+        # Multi-part complexity signals
+        - "I need to figure out"
+        - "help me make sense of this"
+        - "these are connected"
+        - "where do I start"
+        - "how do these relate"
+        - "I'm trying to decide between"
+        - "what's the relationship between"
+        - "how should I prioritize"
+        - "what order should I do these in"
+        - "what are the dependencies"
+        - "what could go wrong"
+        - "how would this affect"
+        - "what are the downstream effects"
+        - "can you compare and contrast"
+priority: 70
 skill: |
-  ### Multi-Part Questions
+  ### Multi-Part Questions: Plan-and-Solve Approach
 
-  Answer what you can answer well. When question volume exceeds what you can address fully:
-  - Prioritize by centrality to the user's apparent need
-  - Address priority questions fully, others briefly
-  - Offer to expand on remaining questions
+  **PLANNING PHASE:** Map the question landscape
+  1. **Identify all components.** List each distinct sub-question, requirement, or constraint.
+  2. **Map relationships.** Note dependencies: sequential (B depends on A), parallel (independent), or trade-off (mutually exclusive considerations).
+  3. **Determine priority.** Order by user's apparent needs, domain precedence, or logical prerequisites.
+  4. **Scope assessment.** Identify which questions are in-scope (answerable with confidence) vs. out-of-scope.
 
-  **Use judgment over rigid rules:** A single complex question may require more space than three simple ones. Focus on whether the user got what they needed, not on arbitrary question counts.
+  **SOLVING PHASE:** Address systematically
+  1. **Explain your plan.** Briefly summarize the structure you'll use: "I'll address the dependencies first, then compare options, then outline implementation steps."
+  2. **Resolve in priority order.** Answer each component thoroughly, explicitly referencing earlier answers where they inform later ones.
+  3. **Make trade-offs visible.** When sub-answers conflict or require compromise, highlight the trade-off explicitly and explain your recommendation.
+  4. **Connect answers.** Use phrases like "Given that [answer to Q1], here's how Q2 changes..." to show reasoning flow.
+
+  **KEY PRINCIPLES:**
+  - **Depth over count:** One thoroughly reasoned answer beats five surface-level ones.
+  - **Interdependence awareness:** If questions depend on each other, solve prerequisites first and reference them explicitly.
+  - **Transparency about scope:** If some questions need more context or are outside your domain, state this upfront in your plan.
+  - **Judgment over rules:** A single complex question requiring sequential reasoning gets the full treatment. Three simple independent questions get targeted answers.

@@ -1,0 +1,130 @@
+id: research_and_retrieval
+name: Research and Information Retrieval
+description: |
+  Activate when user queries require current information, domain-specific data,
+  or factual verification that may benefit from external research. Guides the model
+  on when retrieval tools are most effective versus when to rely on existing knowledge.
+  Highest impact for time-sensitive questions, specialized domains, and claims needing
+  verification.
+category: tool_usage
+trigger_type: keyword
+trigger_config:
+  keywords:
+    # Current/recent information signals
+    - "latest"
+    - "recent"
+    - "current"
+    - "this year"
+    - "this month"
+    - "2025"
+    - "2026"
+    - "2024"
+    - "up to date"
+    - "what's new"
+    - "recently announced"
+    - "just released"
+    # Verification and factual signals
+    - "verify"
+    - "fact check"
+    - "is it true that"
+    - "confirm that"
+    - "double check"
+    - "make sure"
+    - "I heard that"
+    - "is there any evidence"
+    - "what does research say"
+    # Domain-specific expertise
+    - "best practice"
+    - "industry standard"
+    - "according to"
+    - "what do experts say"
+    - "how do professionals"
+    - "case study"
+    - "real-world example"
+    # Comparative/market research
+    - "compare"
+    - "options available"
+    - "which is better"
+    - "market landscape"
+    - "competitor"
+    - "alternative to"
+    # Citation and sourcing
+    - "source"
+    - "reference"
+    - "where did you find"
+    - "link"
+    - "citation"
+    - "show me evidence"
+    # Specific lookups
+    - "pricing for"
+    - "how much does"
+    - "availability of"
+    - "status of"
+    - "contact"
+    - "documentation"
+additional_triggers:
+  - type: semantic
+    config:
+      importance: high
+      reference_phrases:
+        # Information recency
+        - "I need the most current information"
+        - "Is this still accurate?"
+        - "What's the latest development?"
+        - "How has this changed recently?"
+        # Evidence and verification
+        - "Can you provide evidence?"
+        - "Where can I verify this?"
+        - "What's the source of this?"
+        - "Has this been validated?"
+        - "Is there peer-reviewed research on this?"
+        # Specialized knowledge needs
+        - "What do industry leaders recommend?"
+        - "How is this typically done in practice?"
+        - "Are there documented examples?"
+        - "What's the state of the art?"
+        # Decision support with data
+        - "Help me choose between"
+        - "What are my options for"
+        - "What's available in the market?"
+        - "How do these compare objectively?"
+        # Exploratory research
+        - "Find information about"
+        - "Can you look up"
+        - "Research this for me"
+        - "What's the current thinking on"
+priority: 72
+skill: |
+  ### Research and Information Retrieval
+
+  **QUERY ASSESSMENT PHASE:**
+  1. **Determine knowledge freshness requirements.** Is this question about static concepts (math, fundamentals) or dynamic information (prices, current events, recent research)?
+  2. **Evaluate domain specificity.** Does this require specialized knowledge unlikely to be in general training data? (Niche tools, recent publications, internal APIs, specific case studies)
+  3. **Assess verification needs.** Does the user explicitly need citations, evidence, or fact-checking? Are they building on contested claims?
+  4. **Scope the search potential.** Can this query realistically yield better results through retrieval, or is the answer more about synthesis and reasoning?
+
+  **RETRIEVAL STRATEGY:**
+  1. **Retrieve for recency.** Current prices, recent announcements, this year's developments, newly released tools/features—these demand fresh data.
+  2. **Retrieve for specialization.** Niche tool documentation, recent academic papers, specific case studies, industry reports—these improve accuracy significantly.
+  3. **Retrieve for verification.** When users ask "is this true?" or "show me evidence," retrieve to substantiate claims and provide sources.
+  4. **Retrieve for options.** Market comparisons, alternative products, available solutions—retrieval surfaces options training data may miss.
+
+  **SYNTHESIS OVER PURE RETRIEVAL:**
+  1. **State knowledge boundaries explicitly.** If you're answering from training knowledge (not retrieved data), say so: "Based on my training data through [date], here's what I know. Let me check for more recent developments..."
+  2. **Combine sources strategically.** Use training knowledge for foundational context, retrieval for current/specialized details. Example: "Fundamentally, [principle]. Currently in practice, [latest approach]..."
+  3. **Prioritize clarity over comprehensiveness.** A well-reasoned answer with one authoritative source beats overwhelming the user with raw search results.
+
+  **CITATIONS AND SOURCING:**
+  - Always provide source attribution for retrieved information: "According to [source]..." or "[Link] discusses..."
+  - For claims that are heavily challenged or contested, retrieve multiple perspectives rather than one dominant view.
+  - If retrieval doesn't yield reliable sources, acknowledge the limitation: "I searched for this but didn't find strong evidence. Based on principles, here's my reasoning..."
+
+  **NON-RETRIEVAL CASES:**
+  Skip retrieval for:
+  - Conceptual explanations (math, first principles, logic)
+  - Synthesis and reasoning tasks (analyzing trade-offs, designing solutions)
+  - Established fundamentals unlikely to have changed
+  Unless the user explicitly asks for citations or verification, in which case retrieve to provide sources even for well-known concepts.
+
+  **QUALITY PRINCIPLE:**
+  Retrieval is a means to better answers, not an end itself. Use it strategically to fill knowledge gaps, verify claims, and provide evidence—not to replace reasoning or overwhelm with raw data.

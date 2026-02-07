@@ -1,8 +1,10 @@
 id: long_conversations
-name: Long Conversation Handling
+name: Long Conversation Handling with Context Coherence
 description: |
-  Activate in extended conversations (5+ turns) to maintain context coherence
-  and prevent repetition.
+  Activate in extended conversations (5+ turns) to maintain context coherence,
+  prevent contradictions, and avoid redundant explanations. Critical for detecting
+  when new information contradicts earlier statements and for seamlessly leveraging
+  established context to deepen rather than restart reasoning.
 category: conversation_management
 trigger_type: turn_based
 trigger_config:
@@ -28,6 +30,21 @@ additional_triggers:
         - "Can you remind me what you said about that?"
         - "Wait, didn't you say something different before?"
         - "Let me make sure I understand everything we've covered"
+        # Contradiction/inconsistency detection
+        - "I thought you said"
+        - "but earlier you mentioned"
+        - "that contradicts what you said"
+        - "you said X before, now you're saying Y"
+        - "this seems to conflict with"
+        - "I'm confused because you said"
+        - "didn't you just say the opposite"
+        # Context deepening signals
+        - "given what we've discussed"
+        - "building on that earlier point"
+        - "tying this back to"
+        - "expanding on what you said"
+        - "taking that further"
+        - "now that we've established"
   - type: keyword
     config:
       keywords:
@@ -41,18 +58,48 @@ additional_triggers:
         - "refresh my memory"
         - "you said"
         - "you mentioned"
+        # Contradiction markers
+        - "contradicts"
+        - "conflict"
+        - "inconsistent"
+        - "wait, but"
+        - "I thought"
+        - "didn't you say"
+        - "opposite"
+        - "different than"
+        # Context progression
+        - "given that"
+        - "building on"
+        - "now that"
+        - "so then"
+        - "therefore"
+        - "as a result"
       # Higher history decay for long_conversations since this skill is specifically
       # about recalling earlier parts of the conversation. Position-aware decay:
       # - Most recent message (-1): 0.8 (high relevance)
       # - Second message (-2): 0.6 (moderate relevance)
       # - Third message (-3): 0.4 (still relevant for context skills)
       history_decay_by_position: [0.8, 0.6, 0.4]
-priority: 65
+priority: 75
 skill: |
-  ### Long Conversations
+  ### Long Conversations: Context Coherence and Consistency
 
-  As conversations extend:
-  - **Reference earlier context naturally.** If the user mentioned their application earlier, use that context without re-asking.
-  - **Don't repeat explanations.** If you explained something earlier, reference it briefly.
-  - **Summarize when pivoting.** When shifting topics after extended discussion.
-  - **Stay consistent.** Don't contradict earlier statements. If new information changes an earlier answer, acknowledge the update explicitly.
+  **CONTEXT TRACKING PHASE:**
+  1. **Maintain a mental model.** Track key facts, constraints, requirements, and earlier recommendations from prior turns.
+  2. **Detect contradictions.** When new information conflicts with earlier statements, flag it explicitly—don't silently resolve it.
+  3. **Assess applicability.** Check if earlier answers still hold given new context, or if they need revision.
+
+  **COHERENCE STRATEGY:**
+  1. **Reference earlier context naturally.** If the user mentioned their application or constraints earlier, use that context without re-asking. Weave in references like: "Given the throughput requirements you mentioned earlier, here's the adjustment..."
+  2. **Don't repeat explanations.** If you explained something earlier, reference it briefly instead of re-explaining. Example: "As we covered in turn 3, this requires..." rather than re-deriving the concept.
+  3. **Handle new information strategically:**
+     - If it changes an earlier answer: "You mentioned X before, but given that Y is now a constraint, here's the updated recommendation..."
+     - If it confirms earlier guidance: "This aligns with what we discussed—your approach is solid."
+     - If it contradicts earlier guidance: "This is different from what you said before about Z. Let me revisit that recommendation..."
+
+  **PIVOTING AND SUMMARIZATION:**
+  - When significantly shifting topics after extended discussion, briefly recap what you're leaving behind to maintain coherence: "Before we pivot to implementation, we established that [key decision]. That frames everything forward."
+  - Use earlier context as a springboard: "Building on that architecture decision, here's how we handle the new requirement..."
+
+  **CONSISTENCY PRINCIPLE:**
+  Consistency isn't about rigidity—it's about honesty. If new information changes an earlier recommendation, acknowledge it. Saying "Given this new constraint, I'd actually revise my earlier answer" builds trust and demonstrates reasoning over dogmatism.
